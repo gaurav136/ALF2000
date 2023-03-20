@@ -1,10 +1,22 @@
+#include <SharpIR.h>
 #define Kp 1 // experiment to determine this, start by something small that just makes your bot follow the line at a slow speed
 #define Kd 100// experiment to determine this, slowly increase the speeds and adjust this value. ( Note: Kp < Kd) 
 #define MaxSpeed 255// max speed of the robot
 #define BaseSpeed 150 // this is the speed at which the motors should spin when the robot is perfectly on the line
 #define SensorCount  8     // number of sensors used
 
-//#define speedturn 180
+
+#define ir A0
+#define model 1080
+// ir: the pin where your sensor is attached
+// model: an int that determines your sensor:  1080 for GP2Y0A21Y
+//                                            20150 for GP2Y0A02Y
+//                                            (working distance range according to the datasheets)
+SharpIR SharpIR(ir, model);
+
+
+
+#define speedturn 180
 
 //#define rightMotor1 5
 //#define rightMotor2 6
@@ -27,6 +39,9 @@ const uint8_t SensorPins[SensorCount] = {A0, A1, A2, A3, A4, A5, 2, 3};
 
 int lastError = 0;
 unsigned int Sensor[8];
+
+
+
 
 void setup()
 {
@@ -51,24 +66,25 @@ void setup()
   //pinMode(motorPower, OUTPUT);
 
   //wait();
-  delay(3000); // wait for 2s to position the bot before entering the main loop
+  delay(2000); // wait for 2s to position the bot before entering the main loop
 }
 
 
 
 void loop()
 {
-//  for(int i =0; i<8; i++){
-//    Serial.print(i);
-//    Serial.print(" :");
-//    Serial.println(digitalRead(SensorPins[i]));
-//  }
-  
-//  Serial.println("");
-//  delay(1000);
+  //  for(int i =0; i<8; i++){
+  //    Serial.print(i);
+  //    Serial.print(" :");
+  //    Serial.println(digitalRead(SensorPins[i]));
+  //  }
 
-//  return;
-  
+  //  Serial.println("");
+  //  delay(1000);
+
+  //  return;
+
+
   int Position = 0;
   int sensor = 0;
   for (int i = 0 ; i < SensorCount; i++) {
@@ -79,7 +95,18 @@ void loop()
   // Serial.println(Position);
   // delay(500);
   // return;
-  
+
+
+  int dis=SharpIR.distance();
+  if ( dis <= 13) {
+    Serial.println(dis);
+    while (Position > 6500) {
+      move(0, speedturn, 1);
+      move(1, speedturn, 0);
+    }
+    return;
+  }
+
   if (Position < 400) {
     //    move(0, speedturn, 1);
     //    move(1, speedturn, 1);
