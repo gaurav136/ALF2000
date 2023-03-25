@@ -22,6 +22,8 @@
 #define model 1080
 SharpIR SharpIR(ir, model);
 
+#define T_ir 4
+
 int P;
 int I;
 int D;
@@ -83,7 +85,7 @@ void move(int motor, int Speed, int Direction) {
 
 void setup()
 {
-  // Serial.begin(9600);
+   Serial.begin(9600);
 
   for (int i = 0; i < SensorCount ; i++) {
     pinMode(SensorPins[i], INPUT);
@@ -104,26 +106,51 @@ void setup()
 
 void loop()
 {
-  //   for(int i =0; i<8; i++){
-  //      Serial.print(i);
-  //      Serial.print(" :");
-  //      Serial.println(digitalRead(SensorPins[i]));
-  //    }
-  //
-  //    Serial.println("");
-  //    delay(1000);
-  //
-  //    return;
+//  for (int i = 0; i < 8; i++) {
+//    Serial.print(i);
+//    Serial.print(" :");
+//    Serial.println(digitalRead(SensorPins[i]));
+//  }
+//  Serial.println("T_ir :");
+//  Serial.println(digitalRead(T_ir));
+//
+//
+//  Serial.println("");
+//  delay(1000);
+//
+//  return;
 
   int Position = botPosition();
   //  Serial.println(Position);
   //  delay(500);
   //  return;
 
+  
+
+
   int dis = SharpIR.distance();
   //Serial.println(dis);
 
-  if ( dis <= 8) {
+
+  if (
+      (digitalRead(SensorPins[0]) == 1)
+      && (digitalRead(SensorPins[1])==1)
+      && (digitalRead(SensorPins[2])==1)
+      && (digitalRead(SensorPins[3])==1)
+      && (digitalRead(SensorPins[4])==1) 
+      && (digitalRead(SensorPins[5])==1)
+      && (digitalRead(SensorPins[6])==1) 
+      && (digitalRead(SensorPins[7])==1) 
+      && (digitalRead(T_ir)==1)
+      )
+  {
+    move(1, 0 , 1);
+    move(0, 0 , 1);
+    exit(0);
+  }
+
+
+  if ( dis <= 9) {
     //Serial.println(dis);
     while (Position < 6000) {
       Position = botPosition();
@@ -147,7 +174,7 @@ void loop()
       //            Serial.println(rightMotorSpeed);
       //            Serial.println("leftMotorSpeed : ");
       //            Serial.println(leftMotorSpeed);
-      //            delay(2000);
+      //                  delay(500);
       return;
     }
     if (rightMotorSpeed < leftMotorSpeed) {
@@ -158,10 +185,18 @@ void loop()
       //            Serial.println(rightMotorSpeed);
       //            Serial.println("leftMotorSpeed : ");
       //            Serial.println(leftMotorSpeed);
-      //            delay(2000);
+      //                 delay(500);
       return;
     }
 
+  }
+
+  if ((digitalRead(SensorPins[0]) == 1) && (digitalRead(SensorPins[1])==1) && (digitalRead(SensorPins[2])==1)
+      && (digitalRead(SensorPins[3])==1) && (digitalRead(SensorPins[4])==1) && (digitalRead(SensorPins[5])==1)
+      && (digitalRead(SensorPins[6])==0) && (digitalRead(SensorPins[7])==0) && (digitalRead(T_ir)==1))
+  {
+    move(1, 0 , 1);
+    move(0, 0 , 0);
   }
 
   //int  error = Position - (SensorCount-1)*1000/2;
